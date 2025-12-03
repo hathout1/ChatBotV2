@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>RAG Chatbot - Demo</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <h1>RAG Chatbot — Demo</h1>
+
+      <section class="card">
+        <h2>Chat with the bot</h2>
+        <label>
+          Your question<br />
+          <textarea
+            id="query"
+            rows="4"
+            placeholder="Type your question here..."
+          ></textarea>
+        </label>
+        <button id="send-btn">Send</button>
+        <div id="chat-result" class="result"></div>
+      </section>
+
+      <section class="card">
+        <h2>Logs</h2>
+        <pre id="logs" class="logs"></pre>
+      </section>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
