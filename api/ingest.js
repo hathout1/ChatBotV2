@@ -4,8 +4,8 @@ import { MysqlVectorStore } from "../src/vectorstore/mysql.js";
 
 dotenv.config();
 
-const openai = initOpenAI();
-const store = new MysqlVectorStore();
+let openai = null;
+let store = null;
 
 function setCors(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -21,6 +21,23 @@ export default async function handler(req, res) {
   setCors(res);
   if (req.method !== "POST") return res.status(405).end();
   try {
+    if (!openai) {
+      try {
+        openai = initOpenAI();
+      } catch (e) {
+        console.error("OpenAI init error:", e);
+        return res.status(500).json({ error: "OpenAI init error" });
+      }
+    }
+    if (!store) {
+      try {
+        store = new MysqlVectorStore();
+      } catch (e) {
+        console.error("MySQL store init error:", e);
+        return res.status(500).json({ error: "MySQL store init error" });
+      }
+    }
+
     const { id, text, metadata } = req.body;
     if (!id || !text)
       return res.status(400).json({ error: "id and text required" });
