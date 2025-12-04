@@ -1,7 +1,6 @@
-import { initOpenAI } from "../src/embeddings.js";
-import { MysqlVectorStore } from "../src/vectorstore/mysql.js";
-import { answerQuery } from "../src/retriever.js";
 import dotenv from "dotenv";
+import { initOpenAI, embedText } from "../src/embeddings.js";
+import { MysqlVectorStore } from "../src/vectorstore/mysql.js";
 
 dotenv.config();
 
@@ -15,19 +14,19 @@ function setCors(res) {
 }
 
 export default async function handler(req, res) {
-  // handle preflight
   if (req.method === "OPTIONS") {
     setCors(res);
     return res.status(204).end();
   }
-
   setCors(res);
   if (req.method !== "POST") return res.status(405).end();
   try {
-    const { query, context } = req.body;
-    if (!query) return res.status(400).json({ error: "query required" });
-    const answer = await answerQuery(openai, store, query, context);
-    res.json({ ok: true, answer });
+    const { id, text, metadata } = req.body;
+    if (!id || !text)
+      return res.status(400).json({ error: "id and text required" });
+    const embedding = await embedText(openai, text);
+    await store.add({ id, text, embedding, metadata });
+    res.json({ ok: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: String(err) });
