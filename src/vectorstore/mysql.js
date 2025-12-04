@@ -1,4 +1,4 @@
-import { createMysqlPool } from "../src/db.mysql.js";
+import { createMysqlPool } from "../db.mysql.js";
 
 const pool = createMysqlPool();
 
